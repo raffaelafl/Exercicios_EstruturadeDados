@@ -18,7 +18,6 @@ typedef struct esparsa Esparsa;
 
 Esparsa* criar_matriz(int linhas, int colunas) {
     Esparsa* m = (Esparsa*) malloc(sizeof(Esparsa));
-
     m->linhas = linhas;
     m->colunas = colunas;
     m->prim = NULL;
@@ -32,6 +31,31 @@ Lista* lst_insere(Lista* l, int linha, int coluna, int valor) {
     novo->info = valor;
     novo->prox = l;
     return novo;
+}
+
+void inserir_elemento(Esparsa* matriz, int lin, int col, int valor) {
+    if (lin >= 0 && lin < matriz->linhas &&
+        col >= 0 && col < matriz->colunas &&
+        valor != 0) {
+
+        Lista *aux = matriz->prim;
+        int existe = 0;
+
+        while (aux != NULL) {
+            if (aux->linha == lin && aux->coluna == col) {
+                aux->info = valor;
+                existe = 1;
+                break;
+            }
+            aux = aux->prox;
+        }
+
+        if (!existe)
+            matriz->prim = lst_insere(matriz->prim, lin, col, valor);
+    }
+    else {
+        printf("Posicao ou valor invalido\n");
+    }
 }
 
 void imprimir_matriz(Esparsa* mat) {
@@ -84,7 +108,6 @@ float percentual_nao_nulos(Esparsa* mat) {
         nao_nulos++;
         l = l->prox;
     }
-
     return ((float)nao_nulos / total) * 100.0;
 }
 
@@ -97,11 +120,10 @@ int main() {
     scanf("%d", &linhas);
     printf("Digite o numero de colunas: ");
     scanf("%d", &colunas);
-
     matriz = criar_matriz(linhas, colunas);
 
     do {
-        printf("\n\nMenu\n");
+        printf("\n\n------------------------\n|         Menu         |\n------------------------\n");
         printf("1) Inserir valor nao nulo\n");
         printf("2) Imprimir matriz\n");
         printf("3) Consultar valor\n");
@@ -115,28 +137,7 @@ int main() {
             int lin, col, valor;
             printf("Linha, Coluna, Valor: ");
             scanf("%d %d %d", &lin, &col, &valor);
-
-            if (lin >= 0 && lin < matriz->linhas &&
-                col >= 0 && col < matriz->colunas &&
-                valor != 0) {
-
-                Lista *aux = matriz->prim;
-                int existe = 0;
-
-                while (aux != NULL) {
-                    if (aux->linha == lin && aux->coluna == col) {
-                        aux->info = valor;
-                        existe = 1;
-                        break;
-                    }
-                    aux = aux->prox;
-                }
-
-                if (!existe)
-                    matriz->prim = lst_insere(matriz->prim, lin, col, valor);
-            } else {
-                printf("Posicao ou valor invalido");
-            }
+            inserir_elemento(matriz, lin, col, valor);
         }
         else if (op == 2) {
             imprimir_matriz(matriz);
@@ -158,7 +159,6 @@ int main() {
         else if (op == 5) {
             printf("Percentual de elementos nao nulos: %.2f%%\n", percentual_nao_nulos(matriz));
         }
-
     } while (op != 0);
 
     return 0;
