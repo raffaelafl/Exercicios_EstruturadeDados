@@ -38,7 +38,7 @@ void imprimirMatriz(Diagonal* p) {
 
 void consultarElemento(Diagonal* p, int linha, int coluna) {
     if (linha < 0 || linha >= p->ordem || coluna < 0 || coluna >= p->ordem) {
-        printf("Posição invalida.\n");
+        printf("Posicao invalida.\n");
         return;
     }
     if (linha == coluna) {
